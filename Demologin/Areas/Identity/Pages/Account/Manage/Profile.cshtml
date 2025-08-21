@@ -1,0 +1,49 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@using Demologin.Data
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@model ProfileModel
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body p-4">
+                    <h3 class="text-center mb-4 fw-bold">Edit Profile</h3>
+
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="text-center mb-3">
+                            <img src="@(!string.IsNullOrEmpty(Model.ProfilePictureUrl) ? Model.ProfilePictureUrl : "https://via.placeholder.com/120")"
+                                 alt="Profile Picture"
+                                 class="rounded-circle shadow mb-2"
+                                 width="120" height="120" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label">Username</label>
+                            <input asp-for="Username" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Change Profile Picture</label>
+                            <input type="file" asp-for="ProfilePicture" class="form-control" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
