@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -89,18 +88,21 @@ namespace Demologin.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    // 🔹 Check if user has the selected role
                     if (await _userManager.IsInRoleAsync(user, Input.Role))
                     {
-                        _logger.LogInformation($"User logged in with role: {Input.Role}");
-
-                        // Redirect based on role
                         if (Input.Role == "Admin")
-                            return LocalRedirect("/Admin/Dashboard");
+                        {
+                            return RedirectToAction("Dashboard", "Admin");
+                        }
                         else if (Input.Role == "Farmer")
-                            return LocalRedirect("/Farmer/Home");
+                        {
+                            return RedirectToAction("Dashboard", "Farmer");
+                        }
+
                         else
-                            return LocalRedirect(returnUrl);
+                        {
+                            return LocalRedirect(returnUrl); // default redirect
+                        }
                     }
                     else
                     {
@@ -119,14 +121,13 @@ namespace Demologin.Areas.Identity.Pages.Account
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
             }
 
             return Page();
+        
         }
     }
 }
