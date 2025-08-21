@@ -16,7 +16,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Use ApplicationUser here
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
-    options.SignIn.RequireConfirmedAccount = true)
+    options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
