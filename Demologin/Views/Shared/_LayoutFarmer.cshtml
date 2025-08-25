@@ -1,23 +1,30 @@
-﻿@{
-    Layout = null;
-}
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Farmer Panel - @ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
-    <header>
-        <h1>Farmer Dashboard</h1>
-        <nav>
-            <a href="/Farmer/Dashboard">Dashboard</a> |
-            <a href="/Farmer/Crops">My Crops</a> |
-            <a href="/Account/Logout">Logout</a>
-        </nav>
-    </header>
-    <main role="main" class="container">
-        @RenderBody()
-    </main>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="bg-success text-white p-3" style="width:250px; min-height:100vh;">
+            <h4 class="mb-4">🌾 Farmer Panel</h4>
+            <a class="d-block text-white mb-2" asp-controller="Farmer" asp-action="Dashboard">Dashboard</a>
+            <a class="d-block text-white mb-2" asp-controller="Farmer" asp-action="Crops">My Crops</a>
+            <a class="d-block text-white mb-2" asp-controller="Farmer" asp-action="Market">Market Prices</a>
+            <form method="post" asp-area="Identity" asp-page="/Account/Logout">
+                <button type="submit" class="btn btn-light btn-sm mt-3">Logout</button>
+            </form>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1 p-4">
+            <h2 class="mb-3">@ViewData["Title"]</h2>
+            @RenderBody()
+        </div>
+    </div>
 </body>
 </html>
