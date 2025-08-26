@@ -162,10 +162,15 @@
                 <a class="nav-link mb-2 active" asp-controller="Farmer" asp-action="Dashboard">
                     <i class="fas fa-home"></i> Dashboard
                 </a>
-             
-                <a class="nav-link mb-2" asp-area="Identity" asp-page="/Account/Manage/Index">
+
+                <a class="nav-link mb-2" href="javascript:void(0);" onclick="openProfileModal()">
                     <i class="fas fa-user-cog"></i> Profile
                 </a>
+
+
+            
+
+
             </nav>
 
             <div class="logout-btn">
@@ -186,5 +191,50 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+   
+    }
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileModalLabel">Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="profileModalBody">
+                    <!-- Profile page content will load here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function openProfileModal() {
+            var modalBody = document.getElementById("profileModalBody");
+            modalBody.innerHTML = `<div class="text-center p-4">
+                                          <div class="spinner-border text-primary" role="status">
+                                              <span class="visually-hidden">Loading...</span>
+                                          </div>
+                                       </div>`;
+
+            // Load the Identity Profile page inside modal
+            fetch('/Identity/Account/Manage/Index')
+                .then(response => response.text())
+                .then(data => {
+                    modalBody.innerHTML = data;
+                })
+                .catch(error => {
+                    modalBody.innerHTML = `<div class="alert alert-danger">Error loading profile.</div>`;
+                    console.error(error);
+                });
+
+            // Show modal
+            var myModal = new bootstrap.Modal(document.getElementById('profileModal'));
+            myModal.show();
+        }
+    </script>
+
+
 </body>
 </html>
