@@ -2,4 +2,135 @@
     ViewData["Title"] = "Home Page";
 }
 
+<style>
+    /* New general styles for a cleaner look */
+    body {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
 
+    .section {
+        padding: 7rem 0;
+    }
+
+    /* Hero Section with a clean background */
+    .hero-section {
+        background-color: #f8f9fa; /* Very light gray */
+        color: #343a40; /* Dark text for contrast */
+        text-align: center;
+    }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-section p {
+            font-size: 1.5rem;
+            color: #6c757d;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-section .btn {
+            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.3s ease-in-out;
+        }
+
+            .hero-section .btn:hover {
+                transform: translateY(-3px);
+            }
+
+    /* Feature Cards Section */
+    .features-section {
+        background-color: #ffffff;
+    }
+
+        .features-section .card {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+            .features-section .card:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                transform: translateY(-5px);
+            }
+
+    /* CTA Section with a gentle gradient */
+    .cta-section {
+        background: linear-gradient(135deg, #128a3f, #26a84c); /* A soft green gradient */
+        color: white;
+        text-align: center;
+    }
+
+        .cta-section h2 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section .btn {
+            background-color: white;
+            color: #1a4f1a;
+            font-weight: 700;
+            border-radius: 50px;
+            padding: 0.75rem 2rem;
+        }
+
+            .cta-section .btn:hover {
+                background-color: #e2e6ea;
+            }
+</style>
+
+<div class="section hero-section">
+    <div class="container">
+        <h1>Welcome to AGROTrade Hub</h1>
+        <p>Your trusted platform for seamless agricultural trade. Connecting farmers directly to markets for better prices and efficiency.</p>
+        <a class="btn btn-success me-3" asp-area="Identity" asp-page="/Account/Register">Join Now</a>
+        <a class="btn btn-outline-success" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </div>
+</div>
+
+<div class="section features-section">
+    <div class="container text-center">
+        <h2>What We Offer</h2>
+        <p class="lead text-muted mb-5">A platform built on trust, transparency, and technology.</p>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">Direct Connections</h5>
+                        <p class="card-text">Connect directly with a wide network of verified buyers and sellers.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">Fair Pricing</h5>
+                        <p class="card-text">Get the best market prices without middlemen, ensuring fair trade for all.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">Easy Transactions</h5>
+                        <p class="card-text">Our secure and intuitive platform makes trading simple and efficient.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section cta-section">
+    <div class="container">
+        <h2>Ready to Transform Your Trading?</h2>
+        <p class="mb-4">Sign up today and experience the future of agricultural commerce.</p>
+        <a class="btn" asp-area="Identity" asp-page="/Account/Register">Get Started Free</a>
+    </div>
+</div>

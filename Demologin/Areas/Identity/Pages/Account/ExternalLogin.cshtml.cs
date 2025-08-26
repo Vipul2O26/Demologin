@@ -164,14 +164,6 @@ namespace Demologin.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
-                        // 🔹 Save Google profile picture if available
-                        var picture = info.Principal.FindFirstValue("picture");
-                        if (!string.IsNullOrEmpty(picture))
-                        {
-                            user.ProfilePictureUrl = picture;
-                            await _userManager.UpdateAsync(user);
-                        }
-
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -204,7 +196,6 @@ namespace Demologin.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
             return Page();
         }
-
 
         private ApplicationUser CreateUser()
         {
