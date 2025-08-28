@@ -6,7 +6,7 @@ namespace Demologin.Controllers
     {
         public IActionResult Dashboard()
         {
-            return View();  // looks for Views/Farmer/Dashboard.cshtml
+            return View(); 
         }
     }
 }

@@ -1,34 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims; // <-- Add this to get the user's ID
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization; // <-- Add this for role-based access
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Demologin.Models;
+using Demologin.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Demologin.Controllers
 {
-    // Restrict access to only authenticated users with the "Farmer" role
+    // ✅ Only authenticated Farmers can access this controller
     [Authorize(Roles = "Farmer")]
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
-        // GET: Products (Shows ONLY the logged-in user's products)
+        // ✅ GET: Products (only logged-in user's products)
         public async Task<IActionResult> Index()
         {
-            // Get the ID of the currently logged-in user
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // Filter products to show only the ones owned by the current user
             var userProducts = await _context.Products
                                              .Where(p => p.UserId == userId)
                                              .ToListAsync();
@@ -36,113 +35,107 @@ namespace Demologin.Controllers
             return View(userProducts);
         }
 
-        // GET: Products/Details/5 (Checks for ownership)
+        // ✅ GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var product = await _context.Products
-                                        .Include(p => p.User)
                                         .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (product == null)
-            {
-                return NotFound();
-            }
+            if (product == null) return NotFound();
 
-            // Security Check: Only the owner can view their product details
+            // Ownership check
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (product.UserId != userId)
-            {
-                return Forbid(); // Return 403 Forbidden
-            }
+            if (product.UserId != userId) return Forbid();
 
             return View(product);
         }
 
-        // GET: Products/Create
         public IActionResult Create()
         {
-            // We no longer need this line as the UserId is automatically assigned
-            // ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
-        // POST: Products/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // BIND only the properties the user can input to prevent overposting
-        public async Task<IActionResult> Create([Bind("Title,Description,Price")] Product product)
+        public async Task<IActionResult> Create(ProductViewModel model)
         {
-            // Get the ID of the currently logged-in user
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (ModelState.IsValid)
             {
-                // Assign the required values automatically on the server-side
-                product.UserId = userId;
-                product.Status = ProductStatus.Pending; // All new products start as Pending
-                product.CreatedDate = DateTime.Now;
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                string? fileName = null;
+                if (model.ImageFile != null)
+                {
+                    var uploads = Path.Combine(_env.WebRootPath, "uploads");
+                    Directory.CreateDirectory(uploads);
+
+                    fileName = Guid.NewGuid() + Path.GetExtension(model.ImageFile.FileName);
+                    var filePath = Path.Combine(uploads, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(stream);
+                    }
+                }
+
+                var product = new Product
+                {
+                    Title = model.Title,
+                    Description = model.Description,
+                    Price = model.Price,
+                    ImageUrl = fileName, // store filename in DB
+                    UserId = userId,
+                    CreatedDate = DateTime.Now
+                };
 
                 _context.Add(product);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            // If model state is invalid, return the view with the product data
-            return View(product);
+
+            return View(model);
         }
 
-        // GET: Products/Edit/5 (Checks for ownership)
+
+
+        // ✅ GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            if (product == null) return NotFound();
 
-            // Security Check: Only the owner can edit their product
+            // Ownership check
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (product.UserId != userId)
-            {
-                return Forbid();
-            }
+            if (product.UserId != userId) return Forbid();
 
-            // We no longer need this line
-            // ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", product.UserId);
             return View(product);
         }
 
-        // POST: Products/Edit/5 (Checks for ownership)
+        // ✅ POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,Status,ImageUrl,CreatedDate")] Product product)
         {
-            if (id != product.Id)
-            {
-                return NotFound();
-            }
+            if (id != product.Id) return NotFound();
 
-            // Security Check: Find the product in the DB to verify ownership
+            // Load original product from DB
             var originalProduct = await _context.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
-            if (originalProduct == null || originalProduct.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
-            {
-                return Forbid();
-            }
+            if (originalProduct == null) return NotFound();
+
+            // Ownership check
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (originalProduct.UserId != userId) return Forbid();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Preserve the UserId from the original product
+                    // Preserve UserId
                     product.UserId = originalProduct.UserId;
 
                     _context.Update(product);
@@ -151,13 +144,9 @@ namespace Demologin.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ProductExists(product.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -165,42 +154,29 @@ namespace Demologin.Controllers
             return View(product);
         }
 
-        // GET: Products/Delete/5 (Checks for ownership)
+        // ✅ GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var product = await _context.Products
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+            if (product == null) return NotFound();
 
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            // Security Check: Only the owner can delete their product
+            // Ownership check
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (product.UserId != userId)
-            {
-                return Forbid();
-            }
+            if (product.UserId != userId) return Forbid();
 
             return View(product);
         }
 
-        // POST: Products/Delete/5 (Checks for ownership)
+        // ✅ POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);
-
-            // Security Check: Verify ownership before deleting
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             if (product != null && product.UserId == userId)
             {
                 _context.Products.Remove(product);

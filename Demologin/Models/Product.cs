@@ -26,6 +26,9 @@ namespace Demologin.Models
 
         public ProductStatus Status { get; set; }
         public string ImageUrl { get; set; }
+
+        [NotMapped]
+        public IFormFile Photo { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 

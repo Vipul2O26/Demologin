@@ -3,13 +3,15 @@
     {
         Layout = parentLayout.ToString();
     }
-    else
-    {
-        Layout = "/Areas/Identity/Pages/_LayoutFarmer.cshtml";
-    }
 }
 
 <h1>Manage your account</h1>
+
+<div class="mb-3">
+    <a asp-controller="Farmer" asp-action="Dashboard" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left-circle"></i> Back to Dashboard
+    </a>
+</div>
 
 <div>
     <h2>Change your account settings</h2>
@@ -20,21 +22,6 @@
         </div>
         <div class="col-md-9">
             @RenderBody()
-        </div>
-    </div>
-</div>
-
-<!-- Profile Modal -->
-<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="profileModalLabel">Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="profileModalBody">
-                <!-- Profile content loads here -->
-            </div>
         </div>
     </div>
 </div>

@@ -115,6 +115,11 @@ namespace Demologin.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
 
+                    // ✅ Save data to Session (server-side)
+                    HttpContext.Session.SetString("UserId", user.Id);
+                    HttpContext.Session.SetString("Email", user.Email);
+                    HttpContext.Session.SetString("Role", Input.Role);
+
                     // ✅ Role-based redirection
                     if (Input.Role == "Admin")
                     {
@@ -148,6 +153,7 @@ namespace Demologin.Areas.Identity.Pages.Account
             // If something failed
             return Page();
         }
+
 
 
     }

@@ -51,15 +51,14 @@ namespace Demologin.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
+            [Required]
+            [StringLength(256, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
         }
-
         private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
@@ -69,7 +68,8 @@ namespace Demologin.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Username = userName // Populate the new Username property in the InputModel
             };
         }
 
@@ -99,6 +99,18 @@ namespace Demologin.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            // ✅ Update Username
+            if (Input.Username != await _userManager.GetUserNameAsync(user))
+            {
+                var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.Username);
+                if (!setUserNameResult.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set username.";
+                    return RedirectToPage();
+                }
+            }
+
+            // ✅ Update Phone Number
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -114,5 +126,6 @@ namespace Demologin.Areas.Identity.Pages.Account.Manage
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
+
     }
 }
