@@ -1,0 +1,43 @@
+﻿@model List<Demologin.ViewModels.UserWithRolesVM>
+
+@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Manage Users</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+
+                <td>
+                    @if (user.Roles != null && user.Roles.Any())
+                    {
+                        @string.Join(", ", user.Roles)
+                    }
+                    else
+                    {
+                        <span class="text-muted">No Roles</span>
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Admin" asp-action="EditUser" asp-route-id="@user.UserId" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@user.UserId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

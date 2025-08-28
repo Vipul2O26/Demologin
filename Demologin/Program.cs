@@ -59,6 +59,15 @@ builder.Services.AddAuthentication()
         };
     });
 
+// ✅ Session configuration
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
 // Pipeline
@@ -77,7 +86,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// ✅ Important: this order matters
+// ✅ Important: session must be before authentication/authorization if you read session inside them
+app.UseSession();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
