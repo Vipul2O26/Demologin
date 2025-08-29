@@ -12,191 +12,143 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         body {
-            background-color: #f5f7fa;
+            background: #f3f6f9;
             font-family: 'Segoe UI', Arial, sans-serif;
         }
 
-        /* Sidebar */
-        .sidebar {
-            background: linear-gradient(180deg, #2c6e49, #4caf50);
+        /* Navbar */
+        .navbar-custom {
+            background: linear-gradient(90deg, #2c6e49, #4caf50);
+            padding: 0.8rem 1rem;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+            display: flex;
+            align-items: center;
+        }
+
+            .navbar-brand i {
+                margin-right: 8px;
+            }
+
+        .navbar-nav .nav-link {
+            color: #f1f1f1 !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            transition: 0.3s;
+        }
+
+            .navbar-nav .nav-link:hover,
+            .navbar-nav .nav-link.active {
+                background: rgba(255, 255, 255, 0.15);
+                color: #fff !important;
+            }
+
+        .profile-info {
             color: white;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            width: 270px;
-            border-radius: 0 12px 12px 0;
-            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+            margin-right: 1rem;
+            text-align: right;
         }
 
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-            .sidebar-header h4 {
-                font-weight: bold;
-            }
-
-        .sidebar-profile {
-            padding: 1.5rem 1rem;
-            text-align: center;
-        }
-
-            .sidebar-profile .profile-pic {
-                width: 90px;
-                height: 90px;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.2);
-                margin: 0 auto 0.75rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .sidebar-profile h5 {
-                margin-bottom: 0;
-                font-weight: 600;
-            }
-
-            .sidebar-profile small {
+            .profile-info small {
+                font-size: 0.8rem;
                 color: #e0e0e0;
             }
 
-        .nav-link {
+        .logout-btn button {
+            background-color: #ff4d4d;
+            border: none;
             color: white;
-            padding: 0.9rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
+            font-weight: bold;
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            transition: 0.3s;
         }
 
-            .nav-link i {
-                margin-right: 0.75rem;
-                width: 20px;
-                text-align: center;
+            .logout-btn button:hover {
+                background-color: #e63939;
             }
-
-            .nav-link:hover,
-            .nav-link.active {
-                background-color: rgba(255, 255, 255, 0.2);
-                color: #fff;
-            }
-
-        .logout-btn {
-            margin: 1rem;
-        }
-
-            .logout-btn button {
-                background-color: #ff4d4d;
-                border: none;
-                color: white;
-                font-weight: bold;
-                border-radius: 8px;
-                transition: 0.3s;
-            }
-
-                .logout-btn button:hover {
-                    background-color: #e63939;
-                }
 
         /* Main content */
         .main-content {
-            flex-grow: 1;
             padding: 2rem;
-        }
-
-        .dashboard-card {
-            border-radius: 16px;
-            padding: 1.5rem;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease-in-out;
-        }
-
-            .dashboard-card:hover {
-                transform: translateY(-4px);
-            }
-
-            .dashboard-card h5 {
-                font-size: 1.2rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .dashboard-card p {
-                margin-bottom: 1rem;
-            }
-
-        .card-green {
-            background: linear-gradient(135deg, #2c6e49, #4caf50);
-        }
-
-        .card-blue {
-            background: linear-gradient(135deg, #1976d2, #42a5f5);
-        }
-
-        .card-yellow {
-            background: linear-gradient(135deg, #f9a825, #fbc02d);
+            margin-top: 70px; /* offset for fixed navbar */
         }
     </style>
 </head>
 <body>
-    <div class="d-flex">
-        <div class="sidebar d-flex flex-column p-3">
-            <div class="sidebar-header d-flex align-items-center">
-                <i class="fas fa-seedling fa-2x me-2"></i>
-                <h4 class="mb-0">AGROTrade Hub</h4>
-            </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-seedling"></i> AGROTrade Hub
+            </a>
 
-            <div class="sidebar-profile">
-                <div class="profile-pic">
-                    <i class="fas fa-user-circle fa-3x text-white"></i>
+            <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <!-- Navigation links -->
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" asp-controller="Farmer" asp-action="Dashboard">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">
+                            <i class="fas fa-user-cog"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Products" asp-action="Index">
+                            <i class="fas fa-box-open"></i> My Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Products" asp-action="Create">
+                            <i class="fas fa-plus-circle"></i> Add New Product
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Profile & Logout -->
+                <div class="d-flex align-items-center">
+                    <div class="profile-info me-2">
+                        <div>@user?.Email</div>
+                        <small>Farmer Panel</small>
+                    </div>
+                    <div class="logout-btn">
+                        <form method="post" asp-area="Identity" asp-page="/Account/Logout">
+                            <button type="submit" class="btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <h5>@user?.UserName</h5>
-                <small>Farmer Panel</small>
-            </div>
-
-            <nav class="flex-grow-1">
-                <a class="nav-link mb-2 active" asp-controller="Farmer" asp-action="Dashboard">
-                    <i class="fas fa-home"></i> Dashboard
-                </a>
-
-                <a class="nav-link mb-2" asp-area="Identity" asp-page="/Account/Manage/Index">
-                    <i class="fas fa-user-cog"></i> Profile
-                </a>
-
-                <a class="nav-link mb-2" asp-controller="Products" asp-action="Index">
-                    <i class="fas fa-box-open"></i> My Products
-                </a>
-                <a class="nav-link mb-2" asp-controller="Products" asp-action="Create">
-                    <i class="fas fa-plus-circle"></i> Add New Product
-                </a>
-            </nav>
-
-            <div class="logout-btn">
-                <form method="post" asp-area="Identity" asp-page="/Account/Logout">
-                    <button type="submit" class="btn w-100">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </form>
             </div>
         </div>
+    </nav>
 
-         <div class="mt-4">
-             @RenderBody()
-         </div>
+    <!-- Main content -->
+    <div class="main-content">
+        @RenderBody()
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-   
-        <script>
-            sessionStorage.setItem("UserId", "@Context.Session.GetString("UserId")");
-            sessionStorage.setItem("Email", "@Context.Session.GetString("Email")");
-            sessionStorage.setItem("Role", "@Context.Session.GetString("Role")");
-        </script>
-    
+    <script>
+        // Store session values in JS
+        sessionStorage.setItem("UserId", "@Context.Session.GetString("UserId")");
+        sessionStorage.setItem("Email", "@Context.Session.GetString("Email")");
+        sessionStorage.setItem("Role", "@Context.Session.GetString("Role")");
+    </script>
 
-
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

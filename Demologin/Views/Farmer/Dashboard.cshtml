@@ -1,9 +1,53 @@
-﻿@{
+﻿@model IEnumerable<Demologin.Models.Product>
+
+@{
     Layout = "~/Views/Shared/_LayoutFarmer.cshtml";
+    ViewData["Title"] = "Farmer Dashboard";
 }
 
-<!-- Main Content -->
-<div class="main-content">
+<div class="container mt-4">
     <h2 class="mb-4">@ViewData["Title"]</h2>
 
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-img-top d-flex align-items-center justify-content-center"
+                         style="height: 180px; background-color:#f8f9fa;">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="~/uploads/@item.ImageUrl" alt="@item.Title"
+                                 class="img-fluid" style="max-height: 170px; object-fit: contain;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">No Image</span>
+                        }
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text text-success fw-bold">₹ @item.Price</p>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                <input type="hidden" name="productId" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    Add to Cart
+                                </button>
+                            </form>
+
+                            <form asp-controller="Order" asp-action="BuyNow" method="post">
+                                <input type="hidden" name="productId" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    Buy Now
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>

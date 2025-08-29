@@ -1,17 +1,7 @@
 ﻿@{
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
-    {
-        Layout = parentLayout.ToString();
-    }
+    Layout = "~/Views/Shared/_LayoutFarmer.cshtml";
 }
 
-<h1>Manage your account</h1>
-
-<div class="mb-3">
-    <a asp-controller="Farmer" asp-action="Dashboard" class="btn btn-outline-primary">
-        <i class="bi bi-arrow-left-circle"></i> Back to Dashboard
-    </a>
-</div>
 
 <div>
     <h2>Change your account settings</h2>
@@ -21,9 +11,13 @@
             <partial name="_ManageNav" />
         </div>
         <div class="col-md-9">
-            @RenderBody()
+            <!-- This is the page content -->
         </div>
     </div>
 </div>
 
+@section Scripts {
+    <!-- Page-specific scripts -->
+}
 @RenderSection("Scripts", required: false)
+

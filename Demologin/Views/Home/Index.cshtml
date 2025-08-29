@@ -1,58 +1,56 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-}
+} 
 
 <!-- Hero Section -->
-<div class="py-5 text-center bg-light">
-    <div class="container">
-        <h1 class="display-4 fw-bold">Welcome to AGROTrade Hub</h1>
-        <p class="lead text-muted mx-auto mb-4" style="max-width: 700px;">
-            Your trusted platform for seamless agricultural trade. Connecting farmers directly to markets for better prices and efficiency.
-        </p>
-        <a class="btn btn-success btn-lg me-2" asp-area="Identity" asp-page="/Account/Register">Join Now</a>
-        <a class="btn btn-outline-success btn-lg" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </div>
-</div>
-
-<!-- Features Section -->
-<div class="py-5 bg-white">
-    <div class="container text-center">
-        <h2 class="fw-bold">What We Offer</h2>
-        <p class="lead text-muted mb-5">A platform built on trust, transparency, and technology.</p>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title text-success">Direct Connections</h5>
-                        <p class="card-text">Connect directly with a wide network of verified buyers and sellers.</p>
-                    </div>
+<div class="d-flex align-items-center min-vh-100 bg-gradient" 
+     style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9);">
+    <div class="container px-5">
+        <div class="row align-items-center">
+            
+            <!-- Left: Text -->
+            <div class="col-md-6 text-center text-md-start mb-5 mb-md-0">
+                <h1 class="display-3 fw-bold text-success mb-3">
+                    Welcome to <span class="text-dark">AGROTrade Hub</span>
+                </h1>
+                <p class="lead text-muted mb-4" style="max-width: 520px;">
+                    Your trusted platform for seamless agricultural trade.  
+                    Connecting farmers directly to markets for better prices and efficiency.
+                </p>
+                
+                <div class="d-flex justify-content-center justify-content-md-start">
+                    <a class="btn btn-success btn-lg px-4 me-3 shadow-sm transition"
+                       asp-area="Identity" asp-page="/Account/Register">
+                        🌱 Join Now
+                    </a>
+                    <a class="btn btn-outline-success btn-lg px-4 transition"
+                       asp-area="Identity" asp-page="/Account/Login">
+                        Login
+                    </a>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title text-success">Fair Pricing</h5>
-                        <p class="card-text">Get the best market prices without middlemen, ensuring fair trade for all.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title text-success">Easy Transactions</h5>
-                        <p class="card-text">Our secure and intuitive platform makes trading simple and efficient.</p>
-                    </div>
-                </div>
+            
+            <!-- Right: Image -->
+            <div class="col-md-6 text-center">
+                <img src="~/assets/dasboard.jpg" 
+                     alt="AgroTrade Illustration" 
+                     class="img-fluid rounded-4 shadow-lg hero-img" />
             </div>
         </div>
     </div>
 </div>
 
-<!-- Call to Action Section -->
-<div class="py-5 text-center bg-success text-white">
-    <div class="container">
-        <h2 class="fw-bold">Ready to Transform Your Trading?</h2>
-        <p class="lead mb-4">Sign up today and experience the future of agricultural commerce.</p>
-        <a class="btn btn-light btn-lg fw-bold" asp-area="Identity" asp-page="/Account/Register">Get Started Free</a>
-    </div>
-</div>
+<!-- Extra Styling -->
+<style>
+    .transition {
+        transition: all 0.3s ease-in-out;
+    }
+    .transition:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .hero-img {
+        animation: float 4s ease-in-out infinite;
+    }
+  
+</style>
