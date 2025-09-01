@@ -1,41 +1,40 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace Demologin.Models
 {
     public class Product
     {
-        public int Id { get; set; }
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Required]
-        [StringLength(100)]
+        [Required, StringLength(100)]
         public string Title { get; set; }
 
         [StringLength(500)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-
-        [Required]
-        [DataType(DataType.Currency)]
+        [Required, DataType(DataType.Currency)]
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
-        [Column(TypeName = "decimal(18, 2)")] 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
 
-        public string UserId { get; set; } 
-        public ApplicationUser User { get; set; } 
+        // FK to Identity user
+        [Required]
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
-        public ProductStatus Status { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         [NotMapped]
-        public IFormFile Photo { get; set; }
-        public DateTime CreatedDate { get; set; }
-    }
+        public IFormFile? Photo { get; set; }
 
-    public enum ProductStatus
-    {
-        Pending,
-        Approved,
-        Rejected
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
+        // ✅ Navigation to carts
+        public ICollection<Cart> Carts { get; set; } = new List<Cart>();
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Demologin.Models;
 using Demologin.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using Demologin.Data;
 
 namespace Demologin.Controllers
 {
@@ -35,8 +36,8 @@ namespace Demologin.Controllers
             return View(userProducts);
         }
 
-        // ✅ GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // ✅ GET: Products/Details/{id}
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null) return NotFound();
 
@@ -82,12 +83,13 @@ namespace Demologin.Controllers
 
                 var product = new Product
                 {
+                    Id = Guid.NewGuid(),
                     Title = model.Title,
                     Description = model.Description,
                     Price = model.Price,
-                    ImageUrl = fileName, // store filename in DB
+                    ImageUrl = fileName,
                     UserId = userId,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow
                 };
 
                 _context.Add(product);
@@ -99,10 +101,8 @@ namespace Demologin.Controllers
             return View(model);
         }
 
-
-
-        // ✅ GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // ✅ GET: Products/Edit/{id}
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null) return NotFound();
 
@@ -116,15 +116,16 @@ namespace Demologin.Controllers
             return View(product);
         }
 
-        // ✅ POST: Products/Edit/5
+        // ✅ POST: Products/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,Status,ImageUrl,CreatedDate")] Product product)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Price,Status,ImageUrl,CreatedDate")] Product product)
         {
             if (id != product.Id) return NotFound();
 
-            // Load original product from DB
-            var originalProduct = await _context.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+            // Load original product
+            var originalProduct = await _context.Products.AsNoTracking()
+                                                         .FirstOrDefaultAsync(p => p.Id == id);
             if (originalProduct == null) return NotFound();
 
             // Ownership check
@@ -135,9 +136,7 @@ namespace Demologin.Controllers
             {
                 try
                 {
-                    // Preserve UserId
-                    product.UserId = originalProduct.UserId;
-
+                    product.UserId = originalProduct.UserId; // preserve UserId
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
@@ -154,8 +153,8 @@ namespace Demologin.Controllers
             return View(product);
         }
 
-        // ✅ GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // ✅ GET: Products/Delete/{id}
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null) return NotFound();
 
@@ -169,10 +168,10 @@ namespace Demologin.Controllers
             return View(product);
         }
 
-        // ✅ POST: Products/Delete/5
+        // ✅ POST: Products/Delete/{id}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var product = await _context.Products.FindAsync(id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -186,7 +185,7 @@ namespace Demologin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(int id)
+        private bool ProductExists(Guid id)
         {
             return _context.Products.Any(e => e.Id == id);
         }

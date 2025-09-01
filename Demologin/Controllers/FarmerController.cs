@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Demologin.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Demologin.Controllers
 {
