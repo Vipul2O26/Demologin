@@ -1,8 +1,11 @@
 ﻿using Demologin.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demologin.Controllers
 {
+    [Authorize]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public class FarmerController : Controller
     {
         private readonly ApplicationDbContext _context;

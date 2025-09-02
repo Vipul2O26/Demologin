@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demologin.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250901102135_new")]
-    partial class @new
+    [Migration("20250902085710_new1")]
+    partial class new1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

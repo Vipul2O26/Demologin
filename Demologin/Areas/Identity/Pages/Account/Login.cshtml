@@ -1,82 +1,54 @@
 ﻿@page
-
-@model Demologin.Areas.Identity.Pages.Account.LoginModel
-
-
+@model LoginModel
 @{
     ViewData["Title"] = "Log in";
 }
 
-<style>
-    body {
-        background: url('/assets/dashboard.jpg') no-repeat center center fixed; /* fixed path */
-        background-size: cover;
-        margin: 0;
-        font-family: 'Segoe UI', Arial, sans-serif;
-    }
-
-    .login-card {
-        background: rgba(255, 255, 255, 0.85); /* Glassmorphism white */
-        backdrop-filter: blur(6px);
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-
-    .login-title {
-        font-weight: bold;
-        color: #198754; /* Bootstrap success green */
-    }
-
-    .btn-custom {
-        border-radius: 10px;
-    }
-</style>
-
-<div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
-    <div class="col-md-5">
-        <div class="login-card">
-            <h2 class="text-center login-title mb-4">🌱 AGROTrade Hub</h2>
-            <form id="account" method="post">
-                <h4 class="text-center text-dark mb-3">Log in to your account</h4>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger text-center" role="alert"></div>
-
-                <!-- Email -->
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="name@example.com" />
-                    <label asp-for="Input.Email">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-success text-white text-center py-3">
+                    <h3 class="mb-0">@ViewData["Title"]</h3>
                 </div>
+                <div class="card-body p-4">
+                    <form id="account" method="post">
+                        <h5 class="text-center mb-4">Sign in with your account</h5>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 
-                <!-- Password -->
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" placeholder="password" type="password" />
-                    <label asp-for="Input.Password">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label"></label>
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label asp-for="Input.Password" class="form-label"></label>
+                            <input asp-for="Input.Password" class="form-control" type="password" autocomplete="current-password" aria-required="true" placeholder="Password" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="d-grid mb-3">
+                            <button id="login-submit" type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Log in
+                            </button>
+                        </div>
+
+                        <!-- Register Link -->
+                        <div class="text-center">
+                            <p class="mb-0">
+                                Don’t have an account?
+                                <a asp-page="./Register" class="text-success fw-bold">Register here</a>
+                            </p>
+                        </div>
+
+                    
+                    </form>
                 </div>
-
-                <!-- Role -->
-                <div class="form-floating mb-3">
-                    <select asp-for="Input.Role" class="form-select">
-                        <option value="">-- Select Role --</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Farmer">Farmer</option>
-                    </select>
-                    <label asp-for="Input.Role">Role</label>
-                    <span asp-validation-for="Input.Role" class="text-danger"></span>
-                </div>
-
-                <!-- Submit -->
-                <button id="login-submit" type="submit" class="w-100 btn btn-success btn-lg btn-custom">Log in</button>
-
-                <!-- Register -->
-                <div class="text-center mt-3">
-                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-success fw-bold">
-                        Register as a new user
-                    </a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

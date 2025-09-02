@@ -1,11 +1,10 @@
 using Demologin.Data;
-using Microsoft.AspNetCore.Identity;
+using Demologin.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DB connection
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -14,52 +13,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Use ApplicationUser here
-builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
-    options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+// ✅ Identity with auto-role support
+builder.Services.AddDefaultIdentityWithRole();
 
 builder.Services.AddControllersWithViews();
 
-// Google Login
+// ✅ Google with auto Farmer role
 builder.Services.AddAuthentication()
-    .AddGoogle(options =>
-    {
-        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    .AddGoogleWithRole(builder.Services, builder.Configuration);
 
-        options.Events.OnCreatingTicket = async ctx =>
-        {
-            string? picture = null;
-            if (ctx.User.TryGetProperty("picture", out var pictureElement))
-            {
-                picture = pictureElement.GetString();
-            }
-
-            if (!string.IsNullOrEmpty(picture))
-            {
-                var userManager = ctx.HttpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
-
-                // Get the external login user (or null if new)
-                var user = await userManager.GetUserAsync(ctx.Principal);
-
-                if (user != null)
-                {
-                    // Existing user → just update
-                    user.ProfilePictureUrl = picture;
-                    await userManager.UpdateAsync(user);
-                }
-                else
-                {
-                    // First time login → handled in ExternalLoginCallback
-                    ctx.Identity!.AddClaim(new Claim("picture", picture));
-                }
-            }
-        };
-    });
-
-// ✅ Session configuration
+// ✅ Sessions
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -68,10 +31,14 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-
 var app = builder.Build();
 
-// Pipeline
+// ✅ Seed Admin & Roles
+using (var scope = app.Services.CreateScope())
+{
+    await scope.ServiceProvider.SeedRolesAndAdminAsync();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -87,7 +54,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// ✅ Important: session must be before authentication/authorization if you read session inside them
 app.UseSession();
 
 app.UseAuthentication();

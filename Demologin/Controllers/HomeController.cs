@@ -1,4 +1,4 @@
-using Demologin.Models;
+﻿using Demologin.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -17,10 +17,11 @@ namespace Demologin.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(string roleName = "Admin") 
+        // ✅ Just list all users instead of users in a role
+        public async Task<IActionResult> Index()
         {
-            var usersInRole = await _userManager.GetUsersInRoleAsync(roleName);
-            return View(usersInRole); 
+            var users = _userManager.Users; // IQueryable<ApplicationUser>
+            return View(await Task.FromResult(users.ToList()));
         }
 
         public IActionResult Privacy()
@@ -33,5 +34,8 @@ namespace Demologin.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
+
     }
 }

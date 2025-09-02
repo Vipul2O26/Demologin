@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,25 +19,16 @@ namespace Demologin.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
-         
+            // ✅ Sign out Identity cookies
             await _signInManager.SignOutAsync();
 
-         
+            // ✅ Clear session (if used)
             HttpContext.Session.Clear();
 
-            _logger.LogInformation("User logged out and session destroyed.");
+            _logger.LogInformation("User logged out.");
 
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-         
-                return RedirectToPage("/Account/Login");
-               
-            }
+            // Always redirect to Home/Index after logout
+            return RedirectToAction("Index", "Home");
         }
-
     }
 }
