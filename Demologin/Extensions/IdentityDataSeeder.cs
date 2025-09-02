@@ -32,7 +32,7 @@ namespace Demologin.Extensions
             {
                 var user = new ApplicationUser
                 {
-                    UserName = "superadmin",
+                    UserName = adminEmail,
                     Email = adminEmail,
                     EmailConfirmed = true
                 };

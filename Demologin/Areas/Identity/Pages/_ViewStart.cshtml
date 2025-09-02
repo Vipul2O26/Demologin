@@ -1,4 +1,10 @@
-﻿
-@{
-    Layout = "/Views/Shared/_LayoutFarmer.cshtml";
+﻿@{
+    if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        Layout = "/Views/Shared/_LayoutFarmer.cshtml";
+    }
+    else
+    {
+        Layout = "/Views/Shared/_Layout.cshtml"; // fallback layout (public)
+    }
 }

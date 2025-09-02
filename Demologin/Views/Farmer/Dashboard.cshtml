@@ -5,46 +5,59 @@
     ViewData["Title"] = "Farmer Dashboard";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">@ViewData["Title"]</h2>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        
+        <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-primary">
+            <i class="bi bi-cart-fill"></i> View Cart
+        </a>
+    </div>
 
-    <div class="row">
+    <div class="row g-4">
         @foreach (var item in Model)
         {
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-img-top d-flex align-items-center justify-content-center"
-                         style="height: 180px; background-color:#f8f9fa;">
+            <div class="col-md-3 col-sm-6">
+                <div class="card h-100 shadow-lg border-0 rounded-3">
+                    <!-- Product Image -->
+                    <div class="card-img-top d-flex align-items-center justify-content-center bg-light"
+                         style="height: 200px;">
                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                         {
                             <img src="~/uploads/@item.ImageUrl" alt="@item.Title"
-                                 class="img-fluid" style="max-height: 170px; object-fit: contain;" />
+                                 class="img-fluid rounded"
+                                 style="max-height: 190px; object-fit: contain;" />
                         }
                         else
                         {
                             <span class="text-muted">No Image</span>
                         }
                     </div>
+
+                    <!-- Product Info -->
                     <div class="card-body text-center">
-                        <h5 class="card-title">@item.Title</h5>
-                        <p class="card-text text-success fw-bold">₹ @item.Price</p>
+                        <h5 class="card-title text-dark fw-semibold">@item.Title</h5>
+                        <p class="card-text text-success fs-5 fw-bold mb-3">₹ @item.Price</p>
 
-                        <!-- Buttons -->
-                        <div class="d-flex justify-content-between">
-                            <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                                <input type="hidden" name="productId" value="@item.Id" />
-                                <button type="submit" class="btn btn-sm btn-primary">
-                                    Add to Cart
-                                </button>
-                            </form>
+                        <!-- Quantity + Buttons -->
+                        <form asp-controller="Cart" asp-action="Add" method="post" class="d-flex flex-column gap-2">
+                            <input type="hidden" name="productId" value="@item.Id" />
+                            <input type="number" name="quantity" value="1" min="1"
+                                   class="form-control text-center mx-auto"
+                                   style="width:100px;" />
 
-                            <form asp-controller="Order" asp-action="BuyNow" method="post">
-                                <input type="hidden" name="productId" value="@item.Id" />
-                                <button type="submit" class="btn btn-sm btn-success">
-                                    Buy Now
+                            <div class="d-flex justify-content-between gap-2 mt-2">
+                                <button type="submit" class="btn btn-success w-50">
+                                    <i class="bi bi-cart-plus"></i> Add
                                 </button>
-                            </form>
-                        </div>
+
+                                <form asp-controller="Order" asp-action="BuyNow" method="post" class="w-50">
+                                    <input type="hidden" name="productId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-lightning-fill"></i> Buy Now
+                                    </button>
+                                </form>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -28,6 +28,7 @@
             color: white !important;
             display: flex;
             align-items: center;
+            font-size: 1.25rem;
         }
 
             .navbar-brand i {
@@ -40,44 +41,30 @@
             margin: 0 0.5rem;
             border-radius: 6px;
             padding: 0.5rem 1rem;
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
 
             .navbar-nav .nav-link:hover,
             .navbar-nav .nav-link.active {
-                background: rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.2);
                 color: #fff !important;
             }
 
-        .profile-info {
-            color: white;
-            margin-right: 1rem;
-            text-align: right;
+        /* Profile dropdown */
+        .dropdown-menu {
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-            .profile-info small {
-                font-size: 0.8rem;
-                color: #e0e0e0;
-            }
-
-        .logout-btn button {
-            background-color: #ff4d4d;
-            border: none;
-            color: white;
-            font-weight: bold;
-            border-radius: 6px;
-            padding: 0.4rem 0.8rem;
-            transition: 0.3s;
-        }
-
-            .logout-btn button:hover {
-                background-color: #e63939;
+            .dropdown-menu a {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
             }
 
         /* Main content */
         .main-content {
             padding: 2rem;
-            margin-top: 70px; /* offset for fixed navbar */
+            margin-top: 75px; /* offset for fixed navbar */
         }
     </style>
 </head>
@@ -85,27 +72,25 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <!-- Brand -->
+            <a class="navbar-brand" asp-controller="Farmer" asp-action="Dashboard">
                 <i class="fas fa-seedling"></i> AGROTrade Hub
             </a>
 
+            <!-- Toggler -->
             <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+            <!-- Links -->
             <div class="collapse navbar-collapse" id="navbarContent">
-                <!-- Navigation links -->
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link active" asp-controller="Farmer" asp-action="Dashboard">
                             <i class="fas fa-home"></i> Dashboard
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">
-                            <i class="fas fa-user-cog"></i> Profile
-                        </a>
-                    </li>
+            
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Products" asp-action="Index">
                             <i class="fas fa-box-open"></i> My Products
@@ -113,24 +98,26 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Products" asp-action="Create">
-                            <i class="fas fa-plus-circle"></i> Add New Product
+                            <i class="fas fa-plus-circle"></i> Add Product
                         </a>
                     </li>
                 </ul>
 
-                <!-- Profile & Logout -->
-                <div class="d-flex align-items-center">
-                    <div class="profile-info me-2">
-                        <div>@user?.Email</div>
-                        <small>Farmer Panel</small>
-                    </div>
-                    <div class="logout-btn">
-                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-link nav-link" style="cursor:pointer;">Logout</button>
-                        </form>
-
-
-                    </div>
+                <!-- Profile + Logout -->
+                <div class="dropdown">
+                    <a class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> @user?.Email
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fas fa-user"></i> My Profile</a></li>
+                        <li><a class="dropdown-item" asp-controller="Products" asp-action="Index"><i class="fas fa-box"></i> My Products</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post">
+                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -142,12 +129,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Store session values in JS
-        sessionStorage.setItem("UserId", "@Context.Session.GetString("UserId")");
-        sessionStorage.setItem("Email", "@Context.Session.GetString("Email")");
-        sessionStorage.setItem("Role", "@Context.Session.GetString("Role")");
-    </script>
 
     @RenderSection("Scripts", required: false)
 </body>
