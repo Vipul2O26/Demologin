@@ -6,26 +6,30 @@
 }
 
 <div class="container mt-5">
+    <!-- Header with Title + Cart Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        
-        <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-primary">
-            <i class="bi bi-cart-fill"></i> View Cart
+        <h2 class="fw-bold text-success">
+            <i class="bi bi-shop me-2"></i> Farmer Dashboard
+        </h2>
+        <a asp-controller="Cart" asp-action="Index" class="btn btn-primary px-4 shadow-sm">
+            <i class="bi bi-cart-fill me-1"></i> View Cart
         </a>
     </div>
 
     <div class="row g-4">
         @foreach (var item in Model)
         {
-            <div class="col-md-3 col-sm-6">
-                <div class="card h-100 shadow-lg border-0 rounded-3">
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden product-card">
+
                     <!-- Product Image -->
-                    <div class="card-img-top d-flex align-items-center justify-content-center bg-light"
-                         style="height: 200px;">
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                         style="height: 220px;">
                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                         {
                             <img src="~/uploads/@item.ImageUrl" alt="@item.Title"
-                                 class="img-fluid rounded"
-                                 style="max-height: 190px; object-fit: contain;" />
+                                 class="img-fluid p-2"
+                                 style="max-height: 200px; object-fit: contain;" />
                         }
                         else
                         {
@@ -34,19 +38,23 @@
                     </div>
 
                     <!-- Product Info -->
-                    <div class="card-body text-center">
+                    <div class="card-body text-center d-flex flex-column">
                         <h5 class="card-title text-dark fw-semibold">@item.Title</h5>
-                        <p class="card-text text-success fs-5 fw-bold mb-3">₹ @item.Price</p>
+
+                        <!-- Price Badge -->
+                        <span class="badge bg-success fs-6 mb-3 px-3 py-2 shadow-sm">
+                            ₹ @item.Price
+                        </span>
 
                         <!-- Add to Cart -->
-                        <form asp-controller="Cart" asp-action="Add" method="post" class="mb-2">
+                        <form asp-controller="Cart" asp-action="Add" method="post" class="mb-2 flex-grow-1">
                             <input type="hidden" name="productId" value="@item.Id" />
                             <div class="d-flex flex-column align-items-center gap-2">
                                 <input type="number" name="quantity" value="1" min="1"
                                        class="form-control text-center"
-                                       style="width:100px;" />
+                                       style="width:90px;" />
 
-                                <button type="submit" class="btn btn-success w-100">
+                                <button type="submit" class="btn btn-success w-100 shadow-sm">
                                     <i class="bi bi-cart-plus"></i> Add To Cart
                                 </button>
                             </div>
@@ -55,14 +63,29 @@
                         <!-- Buy Now -->
                         <form asp-controller="Order" asp-action="BuyNow" method="post">
                             <input type="hidden" name="productId" value="@item.Id" />
-                            <button type="submit" class="btn btn-outline-primary w-100">
+                            <button type="submit" class="btn btn-outline-primary w-100 shadow-sm">
                                 <i class="bi bi-lightning-fill"></i> Buy Now
                             </button>
                         </form>
                     </div>
-
                 </div>
             </div>
         }
     </div>
 </div>
+
+<!-- Extra CSS for Hover Effects -->
+<style>
+    .product-card {
+        transition: all 0.3s ease-in-out;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+        }
+
+    .badge {
+        font-size: 1rem;
+    }
+</style>

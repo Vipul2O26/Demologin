@@ -25,7 +25,7 @@ namespace Demologin.Models
         // FK to Identity user
         [Required]
         public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public ApplicationUser? User { get; set; }
 
         public string? ImageUrl { get; set; }
 
@@ -36,5 +36,8 @@ namespace Demologin.Models
 
         // ✅ Navigation to carts
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
+        // ✅ Navigation to orders
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

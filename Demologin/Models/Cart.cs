@@ -10,11 +10,11 @@ namespace Demologin.Models
 
         [Required]
         public string UserId { get; set; }   // FK to IdentityUser
-        public ApplicationUser User { get; set; }
+        public ApplicationUser? User { get; set; }
 
         [Required]
         public Guid ProductId { get; set; }  // FK to Product
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
 
         [Required, Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
         public int Quantity { get; set; } = 1;
