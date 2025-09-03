@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -12,7 +13,6 @@ using Demologin.Data;
 
 namespace Demologin.Controllers
 {
-    // ✅ Only authenticated Farmers can access this controller
     [Authorize(Roles = "Farmer")]
     public class ProductsController : Controller
     {
@@ -41,9 +41,7 @@ namespace Demologin.Controllers
         {
             if (id == null) return NotFound();
 
-            var product = await _context.Products
-                                        .FirstOrDefaultAsync(m => m.Id == id);
-
+            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
             if (product == null) return NotFound();
 
             // Ownership check
@@ -53,11 +51,36 @@ namespace Demologin.Controllers
             return View(product);
         }
 
+        // ✅ Helper to serve images from Uploads folder
+        public IActionResult GetImage(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return NotFound();
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", fileName);
+            if (!System.IO.File.Exists(path))
+                return NotFound();
+
+            var extension = Path.GetExtension(fileName).ToLower();
+            var mimeType = extension switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                _ => "application/octet-stream"
+            };
+
+            var fileBytes = System.IO.File.ReadAllBytes(path);
+            return File(fileBytes, mimeType);
+        }
+
+        // ✅ GET: Products/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        // ✅ POST: Products/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductViewModel model)
@@ -69,7 +92,7 @@ namespace Demologin.Controllers
                 string? fileName = null;
                 if (model.ImageFile != null)
                 {
-                    var uploads = Path.Combine(_env.WebRootPath, "uploads");
+                    var uploads = Path.Combine(_env.WebRootPath, "Uploads");
                     Directory.CreateDirectory(uploads);
 
                     fileName = Guid.NewGuid() + Path.GetExtension(model.ImageFile.FileName);
@@ -113,44 +136,69 @@ namespace Demologin.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (product.UserId != userId) return Forbid();
 
-            return View(product);
+            var viewModel = new ProductViewModel
+            {
+                Id = product.Id,
+                Title = product.Title,
+                Description = product.Description,
+                Price = product.Price,
+                ImageUrl = product.ImageUrl
+            };
+
+            return View(viewModel);
         }
 
         // ✅ POST: Products/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Price,Status,ImageUrl,CreatedDate")] Product product)
+        public async Task<IActionResult> Edit(Guid id, ProductViewModel model)
         {
-            if (id != product.Id) return NotFound();
-
-            // Load original product
-            var originalProduct = await _context.Products.AsNoTracking()
-                                                         .FirstOrDefaultAsync(p => p.Id == id);
-            if (originalProduct == null) return NotFound();
-
-            // Ownership check
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (originalProduct.UserId != userId) return Forbid();
+            if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    product.UserId = originalProduct.UserId; // preserve UserId
+                    var product = await _context.Products.FindAsync(id);
+                    if (product == null) return NotFound();
+
+                    // ✅ Update fields
+                    product.Title = model.Title;
+                    product.Description = model.Description;
+                    product.Price = model.Price;
+
+                    // ✅ Handle new image upload
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        var uploadsFolder = Path.Combine(_env.WebRootPath, "Uploads");
+                        Directory.CreateDirectory(uploadsFolder);
+
+                        var fileName = Guid.NewGuid() + Path.GetExtension(model.ImageFile.FileName);
+                        var filePath = Path.Combine(uploadsFolder, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await model.ImageFile.CopyToAsync(stream);
+                        }
+
+                        product.ImageUrl = fileName;
+                    }
+
                     _context.Update(product);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.Id))
+                    if (!_context.Products.Any(e => e.Id == model.Id))
                         return NotFound();
                     else
                         throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
 
-            return View(product);
+            return View(model);
         }
 
         // ✅ GET: Products/Delete/{id}
@@ -161,7 +209,6 @@ namespace Demologin.Controllers
             var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
             if (product == null) return NotFound();
 
-            // Ownership check
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (product.UserId != userId) return Forbid();
 
@@ -183,11 +230,6 @@ namespace Demologin.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductExists(Guid id)
-        {
-            return _context.Products.Any(e => e.Id == id);
         }
     }
 }

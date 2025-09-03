@@ -29,31 +29,21 @@ namespace Demologin.Controllers
             return View(items);
         }
 
-        // Add to Cart
         [HttpPost]
         public async Task<IActionResult> Add(Guid productId, int quantity = 1)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var existing = await _context.Carts
-                .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId);
-
-            if (existing != null)
+            var cartItem = new Cart
             {
-                existing.Quantity += quantity;
-            }
-            else
-            {
-                var cartItem = new Cart
-                {
-                    UserId = userId,
-                    ProductId = productId,
-                    Quantity = quantity
-                };
-                _context.Carts.Add(cartItem);
-            }
+                UserId = userId,
+                ProductId = productId,
+                Quantity = quantity
+            };
 
+            _context.Carts.Add(cartItem);
             await _context.SaveChangesAsync();
+
             return RedirectToAction("Index");
         }
 

@@ -1,4 +1,5 @@
 ﻿using Demologin.Data;
+using Demologin.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 

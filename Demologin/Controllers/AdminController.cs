@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Demologin.ViewModels;
+using Demologin.Models;
 
 namespace Demologin.Controllers
 {

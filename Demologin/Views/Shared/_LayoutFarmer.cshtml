@@ -1,7 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Demologin.Models
 @inject UserManager<ApplicationUser> UserManager
 @{
-    var user = await UserManager.GetUserAsync(User);
+    var currentUser = await UserManager.GetUserAsync(User);
+    var profilePic = string.IsNullOrEmpty(currentUser?.ProfilePictureUrl)
+        ? "/images/default-avatar.png"
+        : currentUser.ProfilePictureUrl;
 }
 
 <!DOCTYPE html>
@@ -103,22 +107,41 @@
                     </li>
                 </ul>
 
-                <!-- Profile + Logout -->
-                <div class="dropdown">
-                    <a class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user-circle"></i> @user?.Email
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown">
-                        <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fas fa-user"></i> My Profile</a></li>
-                        <li><a class="dropdown-item" asp-controller="Products" asp-action="Index"><i class="fas fa-box"></i> My Products</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post">
-                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+      
+           <!-- Profile + Logout -->
+<div class="dropdown">
+    <a class="btn btn-gray dropdown-toggle d-flex align-items-center" href="#" role="button"
+       id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+
+        <!-- Bigger Profile Picture -->
+        <img src="@profilePic" alt="Profile"
+             class="rounded-circle me-2 shadow"
+             width="48" height="48" />
+
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown">
+        <li>
+            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                <i class="fas fa-user"></i> My Profile
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" asp-controller="Products" asp-action="Index">
+                <i class="fas fa-box"></i> My Products
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form asp-area="Identity" asp-page="/Account/Logout" 
+                  asp-route-returnUrl="@Url.Action("Index", "Home")" method="post">
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>
+
             </div>
         </div>
     </nav>
@@ -129,6 +152,15 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- jQuery Validation plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
+    <!-- Optional: Unobtrusive validation for ASP.NET -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.13/jquery.validate.unobtrusive.min.js"></script>
+
 
     @RenderSection("Scripts", required: false)
 </body>

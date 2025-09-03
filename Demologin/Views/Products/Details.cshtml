@@ -1,56 +1,52 @@
 ﻿@model Demologin.Models.Product
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Product Details";
     Layout = "~/Views/Shared/_LayoutFarmer.cshtml";
 }
 
-<h1>Details</h1>
+<div class="container mt-4">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="row g-0">
+            <!-- Product Image -->
+            <div class="col-md-5 text-center bg-light p-3">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Url.Action("GetImage", "Products", new { fileName = Model.ImageUrl })"
+                          alt="@Model.Title"
+                          class="img-fluid rounded-3 shadow-sm"
+                          style="max-height: 350px; object-fit: contain;" />
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.Id)
-        </dd>
-        
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+                }
+                else
+                {
+                    <img src="/images/no-image.png" alt="No Image"
+                         class="img-fluid rounded-3 shadow-sm"
+                         style="max-height: 350px; object-fit: contain;" />
+                }
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-md-7">
+                <div class="card-body">
+                    <h2 class="card-title fw-bold text-primary">@Model.Title</h2>
+                    <p class="text-muted mb-3">@Model.Description</p>
+
+                    <h4 class="text-success fw-bold mb-3">₹ @Model.Price.ToString("N2")</h4>
+
+                    <p class="mb-2"><strong>Added By:</strong> @Model.User?.Email</p>
+                    <p class="mb-2"><strong>Created On:</strong> @Model.CreatedDate.ToString("dd MMM yyyy")</p>
+
+                    <div class="mt-4">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

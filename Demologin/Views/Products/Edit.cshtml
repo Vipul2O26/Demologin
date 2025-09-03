@@ -1,22 +1,20 @@
-﻿@model Demologin.Models.Product
+﻿@model Demologin.ViewModels.ProductViewModel
 
 @{
     ViewData["Title"] = "Edit Product";
     Layout = "~/Views/Shared/_LayoutFarmer.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-lg border-0 rounded-3">
-        <div class="card-header bg-warning text-dark">
-            <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Edit Product</h4>
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-warning text-dark rounded-top-4">
+            <h3 class="mb-0"><i class="bi bi-pencil-square"></i> Edit Product</h3>
         </div>
+
         <div class="card-body p-4">
-            <form asp-action="Edit" enctype="multipart/form-data">
-                <!-- Hidden ID field -->
+            <form asp-action="Edit" asp-route-id="@Model.Id" enctype="multipart/form-data" class="row g-4">
                 <input type="hidden" asp-for="Id" />
-
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
+                <input type="hidden" asp-for="ImageUrl" /> <!-- keep old image if none uploaded -->
                 <!-- Title -->
                 <div class="mb-3">
                     <label asp-for="Title" class="form-label fw-bold"></label>
@@ -27,43 +25,33 @@
                 <!-- Description -->
                 <div class="mb-3">
                     <label asp-for="Description" class="form-label fw-bold"></label>
-                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter product description"></textarea>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
                 <!-- Price -->
                 <div class="mb-3">
                     <label asp-for="Price" class="form-label fw-bold"></label>
-                    <div class="input-group">
-                        <span class="input-group-text">₹</span>
-                        <input asp-for="Price" class="form-control" placeholder="Enter price" />
-                    </div>
+                    <input asp-for="Price" class="form-control" />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
 
-                <!-- Image -->
+                <!-- Image Upload -->
                 <div class="mb-3">
-                    <label asp-for="ImageUrl" class="form-label fw-bold"></label>
-                    <input asp-for="ImageUrl" type="file" accept="image/*" class="form-control" />
-                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    <label class="form-label fw-bold">Product Image</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" />
 
-                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
-                    {
-                        <div class="mt-2">
-                            <img src="@Model.ImageUrl" alt="Current Image" class="img-thumbnail" style="max-height:150px;" />
-                        </div>
-                    }
+                    <img id="imagePreview"
+                         src="@(string.IsNullOrEmpty(Model.ImageUrl) ? Url.Content("~/images/no-image.png") : Url.Content("~/Uploads/" + Model.ImageUrl))"
+                         class="img-fluid rounded-3 mt-3"
+                         style="max-height: 400px; object-fit: contain;" />
                 </div>
 
-                <!-- Buttons -->
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                    <button type="submit" class="btn btn-warning text-dark">
-                        <i class="bi bi-check-circle"></i> Update Product
-                    </button>
-                </div>
+                <!-- Submit -->
+                <button type="submit" class="btn btn-warning text-dark">
+                    <i class="bi bi-check-circle"></i> Update
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
             </form>
         </div>
     </div>
@@ -71,4 +59,13 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('imagePreview').src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
 }
