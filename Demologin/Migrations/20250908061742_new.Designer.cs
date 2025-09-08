@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demologin.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250903050122_profile")]
-    partial class profile
+    [Migration("20250908061742_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -121,6 +121,42 @@ namespace Demologin.Migrations
                     b.ToTable("Carts");
                 });
 
+            modelBuilder.Entity("Demologin.Models.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("Demologin.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -139,6 +175,12 @@ namespace Demologin.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Threshold")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -312,6 +354,25 @@ namespace Demologin.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Demologin.Models.Order", b =>
+                {
+                    b.HasOne("Demologin.Models.Product", "Product")
+                        .WithMany("Orders")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Demologin.Models.ApplicationUser", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Demologin.Models.Product", b =>
                 {
                     b.HasOne("Demologin.Models.ApplicationUser", "User")
@@ -378,12 +439,16 @@ namespace Demologin.Migrations
                 {
                     b.Navigation("Carts");
 
+                    b.Navigation("Orders");
+
                     b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Demologin.Models.Product", b =>
                 {
                     b.Navigation("Carts");
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

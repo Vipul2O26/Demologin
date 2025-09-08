@@ -13,7 +13,7 @@ namespace Demologin.Extensions
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            // Roles to seed
+       
             string[] roles = { "Admin", "Farmer", "Buyer" };
 
             foreach (var roleName in roles)

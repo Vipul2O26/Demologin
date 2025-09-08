@@ -5,6 +5,16 @@
     Layout = "~/Views/Shared/_LayoutFarmer.cshtml";
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+
 <div class="container mt-5">
     <h2 class="fw-bold text-success mb-4">
         <i class="bi bi-receipt-cutoff"></i> My Orders
@@ -39,17 +49,27 @@
                         <td>
                             @if (order.Status == "Pending")
                             {
-                                <span class="badge bg-warning text-dark">@order.Status</span>
+                                <form asp-action="Cancel" asp-route-orderId="@order.Id" method="post" style="display:inline">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Are you sure you want to cancel this order?');">
+                                        Cancel
+                                    </button>
+                                </form>
                             }
                             else if (order.Status == "Completed")
                             {
                                 <span class="badge bg-success">@order.Status</span>
+                            }
+                            else if (order.Status == "Cancelled")
+                            {
+                                <span class="badge bg-danger">@order.Status</span>
                             }
                             else
                             {
                                 <span class="badge bg-secondary">@order.Status</span>
                             }
                         </td>
+
                     </tr>
                 }
             </tbody>

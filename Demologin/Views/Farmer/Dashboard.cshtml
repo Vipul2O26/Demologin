@@ -42,9 +42,23 @@
                         <h5 class="card-title text-dark fw-semibold">@item.Title</h5>
 
                         <!-- Price Badge -->
-                        <span class="badge bg-success fs-6 mb-3 px-3 py-2 shadow-sm">
+                        <span class="badge bg-success fs-6 mb-2 px-3 py-2 shadow-sm">
                             ₹ @item.Price
                         </span>
+
+                        <!-- Stock / Low Stock Badge -->
+                        @if (item.Stock <= item.Threshold)
+                        {
+                            <span class="badge bg-danger fs-6 mb-3 px-3 py-2 shadow-sm">
+                                Low Stock: @item.Stock left
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-info text-dark fs-6 mb-3 px-3 py-2 shadow-sm">
+                                Stock: @item.Stock
+                            </span>
+                        }
 
                         <!-- Add to Cart -->
                         <form asp-controller="Cart" asp-action="Add" method="post" class="mb-2 flex-grow-1">
@@ -68,6 +82,7 @@
                             </button>
                         </form>
                     </div>
+
                 </div>
             </div>
         }

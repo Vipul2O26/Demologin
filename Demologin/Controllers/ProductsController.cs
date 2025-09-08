@@ -110,6 +110,8 @@ namespace Demologin.Controllers
                     Title = model.Title,
                     Description = model.Description,
                     Price = model.Price,
+                    Stock = model.Stock,           
+                    Threshold = model.Threshold,
                     ImageUrl = fileName,
                     UserId = userId,
                     CreatedDate = DateTime.UtcNow

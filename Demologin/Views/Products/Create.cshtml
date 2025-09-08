@@ -30,6 +30,20 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
+                <!-- Stock -->
+                <div class="mb-3">
+                    <label asp-for="Stock" class="form-label fw-bold"></label>
+                    <input asp-for="Stock" class="form-control" placeholder="Enter available stock" />
+                    <span asp-validation-for="Stock" class="text-danger"></span>
+                </div>
+
+                <!-- Threshold -->
+                <div class="mb-3">
+                    <label asp-for="Threshold" class="form-label fw-bold"></label>
+                    <input asp-for="Threshold" class="form-control" placeholder="Enter threshold value" />
+                    <span asp-validation-for="Threshold" class="text-danger"></span>
+                </div>
+
                 <!-- Price -->
                 <div class="mb-3">
                     <label asp-for="Price" class="form-label fw-bold"></label>

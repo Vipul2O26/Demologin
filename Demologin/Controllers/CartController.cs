@@ -28,11 +28,25 @@ namespace Demologin.Controllers
 
             return View(items);
         }
-
         [HttpPost]
         public async Task<IActionResult> Add(Guid productId, int quantity = 1)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null) return NotFound();
+
+            // ✅ Stock + Threshold check
+            if (quantity > product.Stock)
+            {
+                TempData["Error"] = "Not enough stock available.";
+                return RedirectToAction("Index", "Products");
+            }
+
+            if (product.Stock - quantity < product.Threshold)
+            {
+                TempData["Error"] = $"Cannot add to cart. Stock would fall below threshold ({product.Threshold}).";
+                return RedirectToAction("Index", "Products");
+            }
 
             var cartItem = new Cart
             {
@@ -46,6 +60,7 @@ namespace Demologin.Controllers
 
             return RedirectToAction("Index");
         }
+
 
         // Remove from Cart
         public async Task<IActionResult> Remove(Guid id)

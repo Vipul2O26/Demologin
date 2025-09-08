@@ -34,6 +34,13 @@ namespace Demologin.Models
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
+        // ✅ New fields for Stock Management
+        [Range(0, int.MaxValue, ErrorMessage = "Stock must be a non-negative number.")]
+        public int Stock { get; set; } = 0;   // Current available stock
+
+        [Range(0, int.MaxValue, ErrorMessage = "Threshold must be a non-negative number.")]
+        public int Threshold { get; set; } = 0; // Minimum stock level farmer wants to keep
+
         // ✅ Navigation to carts
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();
 

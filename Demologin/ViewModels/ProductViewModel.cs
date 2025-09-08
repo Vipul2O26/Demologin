@@ -20,6 +20,13 @@ namespace Demologin.ViewModels
         [Range(0.01, 999999.99)]
         public decimal Price { get; set; }
 
+        // ✅ New fields for Stock Management
+        [Range(0, int.MaxValue, ErrorMessage = "Stock must be a non-negative number.")]
+        public int Stock { get; set; } = 0;   // Current available stock
+
+        [Range(0, int.MaxValue, ErrorMessage = "Threshold must be a non-negative number.")]
+        public int Threshold { get; set; } = 0; // Minimum stock level farmer wants to keep
+
         public string? ImageUrl { get; set; }  // ✅ keep old image
 
         [Display(Name = "Upload Product Photo")]
