@@ -99,7 +99,7 @@ namespace Demologin.Areas.Identity.Pages.Account
                         await _roleManager.CreateAsync(new IdentityRole("Farmer"));
                     }
 
-                    // ✅ Assign default role "Farmer"
+                    
                     await _userManager.AddToRoleAsync(user, "Farmer");
 
                     var userId = await _userManager.GetUserIdAsync(user);

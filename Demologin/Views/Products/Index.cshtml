@@ -22,7 +22,7 @@
                         <th>Title</th>
                         <th>Description</th>
                         <th>Price</th>
-                        <th>Status</th>
+                        <th>stock</th>
                         <th>Created</th>
                         <th class="text-center">Actions</th>
                     </tr>
@@ -54,6 +54,8 @@
                             <td>₹@item.Price</td>
 
                             <!-- Status -->
+
+                            <td>@item.Stock</td>
                           
                             <!-- Created Date -->
                             <td>@item.CreatedDate.ToString("dd-MMM-yyyy")</td>

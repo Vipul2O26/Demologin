@@ -13,9 +13,9 @@
                 @if (!string.IsNullOrEmpty(Model.ImageUrl))
                 {
                     <img src="@Url.Action("GetImage", "Products", new { fileName = Model.ImageUrl })"
-                          alt="@Model.Title"
-                          class="img-fluid rounded-3 shadow-sm"
-                          style="max-height: 350px; object-fit: contain;" />
+                         alt="@Model.Title"
+                         class="img-fluid rounded-3 shadow-sm"
+                         style="max-height: 350px; object-fit: contain;" />
 
                 }
                 else
@@ -34,18 +34,11 @@
 
                     <h4 class="text-success fw-bold mb-3">₹ @Model.Price.ToString("N2")</h4>
 
-                  
-                    <p class="mb-2"><strong>Total Stock:</strong> @Model.Stock</p>
-                    
 
-                    <div class="mt-4">
-                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </a>
-                        <a asp-action="Index" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Back to List
-                        </a>
-                    </div>
+                    <p class="mb-2"><strong>Total Stock:</strong> @Model.Stock</p>
+
+
+                    
                 </div>
             </div>
         </div>

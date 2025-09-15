@@ -46,7 +46,7 @@
                             ₹ @item.Price
                         </span>
 
-                        <!-- Stock / Low Stock Badge -->
+                 
                         @if (item.Stock <= item.Threshold)
                         {
                             <span class="badge bg-danger fs-6 mb-3 px-3 py-2 shadow-sm">
@@ -59,6 +59,16 @@
                                 Stock: @item.Stock
                             </span>
                         }
+
+                        <a asp-controller="Products"
+                           asp-action="ProductDetails"
+                           asp-route-id="@item.Id"
+                           class="btn btn-info w-100 shadow-sm mb-2">
+                            <i class="bi bi-info-circle"></i> Details
+                        </a>
+
+                     
+
 
                         <!-- Add to Cart -->
                         <form asp-controller="Cart" asp-action="Add" method="post" class="mb-2 flex-grow-1">

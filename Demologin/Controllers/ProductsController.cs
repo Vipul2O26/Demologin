@@ -51,6 +51,18 @@ namespace Demologin.Controllers
             return View(product);
         }
 
+
+        public async Task<IActionResult> ProductDetails(Guid? id)
+        {
+            if (id == null) return NotFound();
+
+            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+            if (product == null) return NotFound();
+
+            
+            return View(product);
+        }
+
         // ✅ Helper to serve images from Uploads folder
         public IActionResult GetImage(string fileName)
         {
@@ -143,6 +155,7 @@ namespace Demologin.Controllers
                 Id = product.Id,
                 Title = product.Title,
                 Description = product.Description,
+                Stock = product.Stock,
                 Price = product.Price,
                 ImageUrl = product.ImageUrl
             };
@@ -168,6 +181,7 @@ namespace Demologin.Controllers
                     product.Title = model.Title;
                     product.Description = model.Description;
                     product.Price = model.Price;
+                    product.Stock = model.Stock;
 
                     // ✅ Handle new image upload
                     if (model.ImageFile != null && model.ImageFile.Length > 0)

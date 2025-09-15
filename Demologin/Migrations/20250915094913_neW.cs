@@ -5,7 +5,7 @@
 namespace Demologin.Migrations
 {
     /// <inheritdoc />
-    public partial class @new : Migration
+    public partial class neW : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
