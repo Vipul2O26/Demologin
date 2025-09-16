@@ -36,34 +36,56 @@ namespace Demologin.Controllers
             return View(userProducts);
         }
 
-        // ✅ GET: Products/Details/{id}
+
         public async Task<IActionResult> Details(Guid? id)
+
         {
+
             if (id == null) return NotFound();
 
+
+
             var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+
             if (product == null) return NotFound();
+
+
 
             // Ownership check
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             if (product.UserId != userId) return Forbid();
 
+
+
             return View(product);
+
         }
 
-
+        // ✅ GET: Products/Details/{id}
         public async Task<IActionResult> ProductDetails(Guid? id)
         {
-            if (id == null) return NotFound();
+          
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+       
             var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null) return NotFound();
 
-            
+     
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+       
             return View(product);
         }
 
-        // ✅ Helper to serve images from Uploads folder
+
         public IActionResult GetImage(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -122,11 +144,15 @@ namespace Demologin.Controllers
                     Title = model.Title,
                     Description = model.Description,
                     Price = model.Price,
-                    Stock = model.Stock,           
+                    Stock = model.Stock,
                     Threshold = model.Threshold,
                     ImageUrl = fileName,
                     UserId = userId,
-                    CreatedDate = DateTime.UtcNow
+                    CreatedDate = DateTime.UtcNow,
+
+                    // ✅ new fields
+                    DiscountPercentage = model.DiscountPercentage,
+                    DiscountValidTill = model.DiscountValidTill
                 };
 
                 _context.Add(product);
@@ -157,7 +183,11 @@ namespace Demologin.Controllers
                 Description = product.Description,
                 Stock = product.Stock,
                 Price = product.Price,
-                ImageUrl = product.ImageUrl
+                ImageUrl = product.ImageUrl,
+
+                // ✅ new fields
+                DiscountPercentage = (int)product.DiscountPercentage,
+                DiscountValidTill = product.DiscountValidTill
             };
 
             return View(viewModel);
@@ -177,11 +207,14 @@ namespace Demologin.Controllers
                     var product = await _context.Products.FindAsync(id);
                     if (product == null) return NotFound();
 
-                    // ✅ Update fields
                     product.Title = model.Title;
                     product.Description = model.Description;
                     product.Price = model.Price;
                     product.Stock = model.Stock;
+
+                    // ✅ new fields
+                    product.DiscountPercentage = model.DiscountPercentage;
+                    product.DiscountValidTill = model.DiscountValidTill;
 
                     // ✅ Handle new image upload
                     if (model.ImageFile != null && model.ImageFile.Length > 0)

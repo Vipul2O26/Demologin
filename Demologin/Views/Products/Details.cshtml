@@ -8,15 +8,13 @@
 <div class="container mt-4">
     <div class="card shadow-lg border-0 rounded-3">
         <div class="row g-0">
-            <!-- Product Image -->
-            <div class="col-md-5 text-center bg-light p-3">
+            <div class="col-md-5 text-center bg-light p-3 position-relative">
                 @if (!string.IsNullOrEmpty(Model.ImageUrl))
                 {
                     <img src="@Url.Action("GetImage", "Products", new { fileName = Model.ImageUrl })"
-                          alt="@Model.Title"
-                          class="img-fluid rounded-3 shadow-sm"
-                          style="max-height: 350px; object-fit: contain;" />
-
+                         alt="@Model.Title"
+                         class="img-fluid rounded-3 shadow-sm"
+                         style="max-height: 350px; object-fit: contain;" />
                 }
                 else
                 {
@@ -24,19 +22,57 @@
                          class="img-fluid rounded-3 shadow-sm"
                          style="max-height: 350px; object-fit: contain;" />
                 }
+                @if (Model.DiscountPercentage > 0 && (!Model.DiscountValidTill.HasValue || Model.DiscountValidTill.Value >= DateTime.UtcNow))
+                {
+                    <span class="badge bg-success position-absolute top-0 start-0 m-3 p-2 fs-6">
+                        <i class="bi bi-tag-fill me-1"></i> Sale
+                    </span>
+                }
             </div>
 
-            <!-- Product Info -->
             <div class="col-md-7">
                 <div class="card-body">
                     <h2 class="card-title fw-bold text-primary">@Model.Title</h2>
                     <p class="text-muted mb-3">@Model.Description</p>
 
-                    <h4 class="text-success fw-bold mb-3">₹ @Model.Price.ToString("N2")</h4>
+                    @if (Model.DiscountPercentage > 0 && (!Model.DiscountValidTill.HasValue || Model.DiscountValidTill.Value >= DateTime.UtcNow))
+                    {
+                        <div class="d-flex align-items-baseline mb-2">
+                            <h4 class="text-success fw-bold me-2">₹ @Model.DiscountedPrice.ToString("N2")</h4>
+                            <span class="text-muted text-decoration-line-through me-2">₹ @Model.Price.ToString("N2")</span>
+                            <span class="badge bg-danger">Save @Model.DiscountPercentage.ToString("N0")%</span>
+                        </div>
+                        @if (Model.DiscountValidTill.HasValue)
+                        {
+                            <p class="text-danger">Discount ends on: @Model.DiscountValidTill.Value.ToString("g")</p>
+                        }
+                    }
+                    else
+                    {
+                        <h4 class="text-success fw-bold mb-3">₹ @Model.Price.ToString("N2")</h4>
+                    }
 
-                  
                     <p class="mb-2"><strong>Total Stock:</strong> @Model.Stock</p>
-                    
+                    <p class="mb-2"><strong>Minimum Threshold:</strong> @Model.Threshold</p>
+
+                    @* // 🆕 Added display for Discount fields for farmer's view*@
+                    @if (Model.DiscountPercentage > 0)
+                    {
+                        <p class="mb-2"><strong>Discount:</strong> @Model.DiscountPercentage%</p>
+                        @if (Model.DiscountValidTill.HasValue)
+                        {
+                            <p class="mb-2"><strong>Discount Valid Till:</strong> @Model.DiscountValidTill.Value.ToString("g")</p>
+                        }
+                        else
+                        {
+                            <p class="mb-2"><strong>Discount Valid Till:</strong> No end date</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="mb-2"><strong>Discount:</strong> No current discount</p>
+                    }
+
 
                     <div class="mt-4">
                         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">

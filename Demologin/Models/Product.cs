@@ -22,7 +22,6 @@ namespace Demologin.Models
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
 
-        // FK to Identity user
         [Required]
         public string UserId { get; set; }
         public ApplicationUser? User { get; set; }
@@ -34,17 +33,34 @@ namespace Demologin.Models
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        // ✅ New fields for Stock Management
         [Range(0, int.MaxValue, ErrorMessage = "Stock must be a non-negative number.")]
-        public int Stock { get; set; } = 0;   // Current available stock
+        public int Stock { get; set; } = 0;
 
         [Range(0, int.MaxValue, ErrorMessage = "Threshold must be a non-negative number.")]
-        public int Threshold { get; set; } = 0; // Minimum stock level farmer wants to keep
+        public int Threshold { get; set; } = 0;
 
-        // ✅ Navigation to carts
+        // ✅ FIXED: Added Column data annotation
+        [Range(0, 100, ErrorMessage = "Discount must be between 0 and 100.")]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal DiscountPercentage { get; set; } = 0;
+
+        public DateTime? DiscountValidTill { get; set; }
+
+        [NotMapped]
+        public decimal DiscountedPrice
+        {
+            get
+            {
+                if (DiscountPercentage > 0 &&
+                    (!DiscountValidTill.HasValue || DiscountValidTill.Value >= DateTime.UtcNow))
+                {
+                    return Price - (Price * (DiscountPercentage / 100));
+                }
+                return Price;
+            }
+        }
+
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();
-
-        // ✅ Navigation to orders
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

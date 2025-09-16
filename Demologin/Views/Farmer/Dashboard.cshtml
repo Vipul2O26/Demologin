@@ -5,112 +5,141 @@
     ViewData["Title"] = "Farmer Dashboard";
 }
 
-<div class="container mt-5">
-    <!-- Header with Title + Cart Button -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-success">
-            <i class="bi bi-shop me-2"></i> Farmer Dashboard
+<div class="container py-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h2 class="fw-bold text-success m-0">
+            <i class="bi bi-shop-window me-2"></i> Farmer Dashboard
         </h2>
-        <a asp-controller="Cart" asp-action="Index" class="btn btn-primary px-4 shadow-sm">
-            <i class="bi bi-cart-fill me-1"></i> View Cart
+        <a asp-controller="Cart" asp-action="Index" class="btn btn-success btn-lg px-4 shadow-sm rounded-pill">
+            <i class="bi bi-cart-check-fill me-2"></i> View Cart
         </a>
     </div>
 
+    <!-- Products Grid -->
     <div class="row g-4">
         @foreach (var item in Model)
         {
             <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden product-card">
+                <div class="card h-100 border-0 shadow-sm product-card-new rounded-4 overflow-hidden">
 
                     <!-- Product Image -->
-                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                    <div class="bg-light d-flex align-items-center justify-content-center p-3 border-bottom"
                          style="height: 220px;">
                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                         {
                             <img src="~/uploads/@item.ImageUrl" alt="@item.Title"
-                                 class="img-fluid p-2"
-                                 style="max-height: 200px; object-fit: contain;" />
+                                 class="img-fluid rounded-3"
+                                 style="max-height: 100%; object-fit: contain;" />
                         }
                         else
                         {
-                            <span class="text-muted">No Image</span>
+                            <span class="text-muted fst-italic">No Image Available</span>
                         }
                     </div>
 
                     <!-- Product Info -->
                     <div class="card-body text-center d-flex flex-column">
-                        <h5 class="card-title text-dark fw-semibold">@item.Title</h5>
+                        <h5 class="card-title text-dark fw-bold mb-2">@item.Title</h5>
 
-                        <!-- Price Badge -->
-                        <span class="badge bg-success fs-6 mb-2 px-3 py-2 shadow-sm">
-                            ₹ @item.Price
-                        </span>
+                        <!-- Price Section -->
+                        <div class="mb-3">
+                            @if (item.DiscountPercentage > 0)
+                            {
+                                <div class="d-flex justify-content-center align-items-baseline gap-2">
+                                    <span class="text-muted text-decoration-line-through small">
+                                        ₹ @item.Price
+                                    </span>
+                                    <span class="text-success fw-bold fs-5">
+                                        ₹ @(item.Price - (item.Price * item.DiscountPercentage / 100))
+                                    </span>
+                                    <span class="badge bg-success-subtle text-success rounded-pill">
+                                        -@item.DiscountPercentage%
+                                    </span>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-success fw-bold fs-5">
+                                    ₹ @item.Price
+                                </span>
+                            }
+                        </div>
 
-                 
-                        @if (item.Stock <= item.Threshold)
-                        {
-                            <span class="badge bg-danger fs-6 mb-3 px-3 py-2 shadow-sm">
-                                Low Stock: @item.Stock left
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-info text-dark fs-6 mb-3 px-3 py-2 shadow-sm">
-                                Stock: @item.Stock
-                            </span>
-                        }
+                        <!-- Stock Info -->
+                        <div class="mb-3">
+                            @if (item.Stock <= item.Threshold)
+                            {
+                                <span class="badge bg-danger px-3 py-2 rounded-pill shadow-sm">
+                                    Low Stock: @item.Stock left
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill shadow-sm">
+                                    Stock: @item.Stock
+                                </span>
+                            }
+                        </div>
 
-                        <a asp-controller="Products"
-                           asp-action="ProductDetails"
-                           asp-route-id="@item.Id"
-                           class="btn btn-info w-100 shadow-sm mb-2">
-                            <i class="bi bi-info-circle"></i> Details
-                        </a>
-
-                     
-
-
-                        <!-- Add to Cart -->
-                        <form asp-controller="Cart" asp-action="Add" method="post" class="mb-2 flex-grow-1">
-                            <input type="hidden" name="productId" value="@item.Id" />
-                            <div class="d-flex flex-column align-items-center gap-2">
-                                <input type="number" name="quantity" value="1" min="1"
-                                       class="form-control text-center"
-                                       style="width:90px;" />
-
-                                <button type="submit" class="btn btn-success w-100 shadow-sm">
-                                    <i class="bi bi-cart-plus"></i> Add To Cart
+                        <!-- Buttons -->
+                        <div class="mt-auto d-grid gap-2">
+                            <form asp-controller="Cart" asp-action="Add" method="post">
+                                <input type="hidden" name="productId" value="@item.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-outline-success rounded-pill">
+                                    <i class="bi bi-cart-plus-fill me-2"></i> Add to Cart
                                 </button>
-                            </div>
-                        </form>
+                            </form>
 
-                        <!-- Buy Now -->
-                        <form asp-controller="Order" asp-action="BuyNow" method="post">
-                            <input type="hidden" name="productId" value="@item.Id" />
-                            <button type="submit" class="btn btn-outline-primary w-100 shadow-sm">
-                                <i class="bi bi-lightning-fill"></i> Buy Now
-                            </button>
-                        </form>
+                            <a asp-controller="Products" asp-action="ProductDetails" asp-route-id="@item.Id"
+                               class="btn btn-outline-secondary rounded-pill">
+                                <i class="bi bi-info-circle me-2"></i> Details
+                            </a>
+
+                            <form asp-controller="Order" asp-action="BuyNow" method="post">
+                                <input type="hidden" name="productId" value="@item.Id" />
+                                <button type="submit" class="btn btn-success rounded-pill">
+                                    <i class="bi bi-bag-check-fill me-2"></i> Buy Now
+                                </button>
+                            </form>
+                        </div>
                     </div>
-
                 </div>
             </div>
         }
     </div>
 </div>
 
-<!-- Extra CSS for Hover Effects -->
+<!-- Custom CSS -->
 <style>
-    .product-card {
-        transition: all 0.3s ease-in-out;
+    body {
+        background-color: #f8fdf8;
     }
 
-        .product-card:hover {
+    .product-card-new {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .product-card-new:hover {
             transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
         }
 
     .badge {
-        font-size: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .bg-success-subtle {
+        background-color: #d4edda !important;
+    }
+
+    .bg-primary-subtle {
+        background-color: #e2eafc !important;
+    }
+
+    .btn {
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
     }
 </style>

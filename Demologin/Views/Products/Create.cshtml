@@ -1,6 +1,5 @@
 ﻿@model Demologin.ViewModels.ProductViewModel
 
-
 @{
     ViewData["Title"] = "Create Product";
     Layout = "~/Views/Shared/_LayoutFarmer.cshtml";
@@ -54,12 +53,26 @@
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
 
+                <!-- ✅ Discount Percentage -->
+                <div class="mb-3">
+                    <label asp-for="DiscountPercentage" class="form-label fw-bold"></label>
+                    <input asp-for="DiscountPercentage" class="form-control" placeholder="Enter discount %" />
+                    <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+                </div>
+
+                <!-- ✅ Discount Valid Till -->
+                <div class="mb-3">
+                    <label asp-for="DiscountValidTill" class="form-label fw-bold"></label>
+                    <input asp-for="DiscountValidTill" type="date" class="form-control" />
+                    <span asp-validation-for="DiscountValidTill" class="text-danger"></span>
+                </div>
+
+                <!-- Image Upload -->
                 <div class="mb-3">
                     <label asp-for="ImageFile" class="form-label fw-bold"></label>
                     <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" />
                     <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
-
 
                 <!-- Buttons -->
                 <div class="d-flex justify-content-between">
@@ -76,8 +89,6 @@
     </div>
 </div>
 
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

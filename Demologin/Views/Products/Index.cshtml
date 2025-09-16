@@ -22,7 +22,8 @@
                         <th>Title</th>
                         <th>Description</th>
                         <th>Price</th>
-                        <th>stock</th>
+                        <th>Stock</th>
+                        <th>Discount</th>
                         <th>Created</th>
                         <th class="text-center">Actions</th>
                     </tr>
@@ -43,20 +44,44 @@
                                 }
                             </td>
 
-
                             <!-- Title -->
                             <td class="fw-bold">@item.Title</td>
 
                             <!-- Description (shortened) -->
                             <td>@(item.Description?.Length > 40 ? item.Description.Substring(0, 40) + "..." : item.Description)</td>
 
-                            <!-- Price -->
-                            <td>₹@item.Price</td>
+                            <!-- ✅ Price with Discount -->
+                            <td>
+                                @if (item.DiscountPercentage > 0 && (!item.DiscountValidTill.HasValue || item.DiscountValidTill >= DateTime.UtcNow))
+                                {
+                                    <span class="text-muted text-decoration-line-through">₹@item.Price</span>
 
-                            <!-- Status -->
+                                    <br />
+                                    <span class="fw-bold text-success">₹@item.DiscountedPrice</span>
+                                }
+                                else
+                                {
+                                    <span class="fw-bold">₹@item.Price</span>
+                                }
+                            </td>
 
+                            <!-- Stock -->
                             <td>@item.Stock</td>
-                          
+
+                            <!-- ✅ Show Discount % -->
+                            <td>
+                                @if (item.DiscountPercentage > 0 && (!item.DiscountValidTill.HasValue || item.DiscountValidTill >= DateTime.UtcNow))
+                                {
+                                    <span class="badge bg-success">@item.DiscountPercentage% Off</span>
+                                    <br />
+                                    <small class="text-muted">Valid till: @(item.DiscountValidTill?.ToString("dd-MMM-yyyy") ?? "No limit")</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No Discount</span>
+                                }
+                            </td>
+
                             <!-- Created Date -->
                             <td>@item.CreatedDate.ToString("dd-MMM-yyyy")</td>
 

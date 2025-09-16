@@ -16,7 +16,6 @@ namespace Demologin.ViewModels
         [StringLength(500)]
         public string Description { get; set; }
 
-
         [Required]
         [Range(0.01, 999999.99)]
         public decimal Price { get; set; }
@@ -32,5 +31,14 @@ namespace Demologin.ViewModels
 
         [Display(Name = "Upload Product Photo")]
         public IFormFile? ImageFile { get; set; }
+
+        // ✅ New Discount Fields
+        [Range(0, 100, ErrorMessage = "Discount must be between 0% and 100%.")]
+        [Display(Name = "Discount Percentage")]
+        public int DiscountPercentage { get; set; } = 0;
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Discount Valid Till")]
+        public DateTime? DiscountValidTill { get; set; }
     }
 }
